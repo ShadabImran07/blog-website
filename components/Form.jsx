@@ -1,14 +1,35 @@
 import Link from "next/link";
 
 const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
+	const TransformFile = (file) => {
+		const reader = new FileReader();
+		if (file) {
+			reader.readAsDataURL(file);
+			reader.onloadend = () => {
+				setPost({ ...post, photo: reader.result });
+			};
+		} else {
+			setPost({ ...post, photo: "" });
+		}
+	};
+	const handleImageChange = (e) => {
+		const file = e.target.files[0];
+
+		TransformFile(file);
+	};
+
+	const handleVideoChange = async (e) => {
+		const file = e.target.files[0];
+		setPost({ ...post, video: file });
+	};
+
 	return (
 		<section className='w-full max-w-full flex-start flex-col'>
 			<h1 className='head_text text-left'>
-				<span className='blue_gradient'>{type} Post</span>
+				<span className='blue_gradient'>{type} Blog</span>
 			</h1>
 			<p className='desc text-left max-w-md'>
-				{type} and share amazing prompts with the world, and let your
-				imagination run wild with any AI-powered platform
+				{type} and share amazing blog with the world.
 			</p>
 
 			<form
@@ -17,10 +38,11 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
 			>
 				<label>
 					<span className='font-satoshi font-semibold text-base text-gray-700'>
-						Your AI Prompt
+						Your Title
 					</span>
 
-					<textarea
+					<input
+						type='text'
 						value={post.prompt}
 						onChange={(e) => setPost({ ...post, prompt: e.target.value })}
 						placeholder='Write your post here'
@@ -28,13 +50,41 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
 						className='form_textarea '
 					/>
 				</label>
+				<label>
+					<span className='font-satoshi font-semibold text-base text-gray-700'>
+						Image
+					</span>
+
+					<input
+						type='file'
+						accept='image/*'
+						// value={post.photo}
+						onChange={handleImageChange}
+						placeholder='Upload your image here'
+						required
+						className='form_textarea '
+					/>
+				</label>
+				<label>
+					<span className='font-satoshi font-semibold text-base text-gray-700'>
+						Video
+					</span>
+
+					<input
+						type='file'
+						accept='video/*'
+						// value={post.photo}
+						onChange={handleVideoChange}
+						placeholder='Upload your video here'
+						required
+						className='form_textarea '
+					/>
+				</label>
 
 				<label>
 					<span className='font-satoshi font-semibold text-base text-gray-700'>
-						Field of Prompt{" "}
-						<span className='font-normal'>
-							(#product, #webdevelopment, #idea, etc.)
-						</span>
+						Field of comment{" "}
+						<span className='font-normal'>(#nice, #good, #idea, etc.)</span>
 					</span>
 					<input
 						value={post.tag}
